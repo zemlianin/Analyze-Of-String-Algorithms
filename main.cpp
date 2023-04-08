@@ -9,6 +9,17 @@ int numOfTry = 20;
 int startIndex = 34;
 std::ofstream fout;
 
+
+void check(std::string &text, std::string &pattern, std::vector<int> &res) {
+    int index = 0;
+    while (index != -1) {
+        index = text.find(pattern, index + 1);
+        if (index != -1 && std::find(res.begin(), res.end(), index) == res.end()) {
+            std::cout << "Error!\n";
+        }
+    }
+}
+
 std::vector<std::string> getText(int len, int a) {
     srand(55);
     std::vector<std::string> ans = std::vector<std::string>(numOfTry);
@@ -20,10 +31,6 @@ std::vector<std::string> getText(int len, int a) {
     return ans;
 }
 
-void outputToFile(std::string s) {
-    fout << s;
-}
-
 std::vector<int> search(std::string &text, std::string &pattern, std::vector<int64_t> &resultTime,
                         void (*func)(std::string &, std::string &, std::vector<int> &)) {
     std::vector<int> result;
@@ -31,42 +38,25 @@ std::vector<int> search(std::string &text, std::string &pattern, std::vector<int
     func(text, pattern, result);
     auto elapsed = std::chrono::high_resolution_clock::now() - start;
     int64_t time = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
+    check(text, pattern, result);
     resultTime.push_back(time);
     return result;
 }
 
-void createResult(std::vector<std::string> texts) {
+void createResult(std::vector<std::string> texts, int num_quest) {
     std::vector<std::vector<std::vector<int64_t>>> resultTime(3, std::vector<std::vector<int64_t>>(3000 / 100));
     std::string pattern;
     std::vector<int> result;
     int n = 0;
     for (int len = 100; len <= 3000; len += 100) {
         for (size_t i = 0; i < texts.size(); ++i) {
-            //std::vector<int> (*pt2Func)(std::string,std::string,std::vector<int64_t> ) = nullptr;
-            //pt2Func = &searcher.simpleSearch;
             pattern = texts[i].substr(startIndex, len);
-                search(texts[i], pattern, resultTime[0][n], simpleSearch);
-                search(texts[i], pattern, resultTime[1][n], kmp);
-                search(texts[i], pattern, resultTime[2][n], kmpWithBrs);
-            /* auto start = std::chrono::high_resolution_clock::now();
-             simpleSearch(texts[i], pattern, result);
-             auto elapsed = std::chrono::high_resolution_clock::now() - start;
-             int64_t time = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
-             resultTime[0][n].push_back(time);
-             result = std::vector<int>();
-
-             start = std::chrono::high_resolution_clock::now();
-             kmp(texts[i], pattern, result);
-             elapsed = std::chrono::high_resolution_clock::now() - start;
-             time = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
-             resultTime[1][n].push_back(time);
-             result = std::vector<int>();
-
-             start = std::chrono::high_resolution_clock::now();
-             kmpWithBrs(texts[i], pattern, result);
-             elapsed = std::chrono::high_resolution_clock::now() - start;
-             time = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
-             resultTime[2][n].push_back(time);*/
+            for (int j = 0; j < num_quest; ++j) {
+                pattern[rand() % pattern.size()] = '?';
+            }
+            search(texts[i], pattern, resultTime[0][n], simpleSearch);
+            search(texts[i], pattern, resultTime[1][n], kmp);
+            search(texts[i], pattern, resultTime[2][n], kmpWithBrs);
         }
         n++;
     }
@@ -83,7 +73,7 @@ void createResult(std::vector<std::string> texts) {
     }
     for (int i = 0; i < 3; ++i) {
         for (int j = 0; j < middle[i].size(); ++j) {
-            fout << std::to_string(middle[i][j]) << " ";
+            fout << std::to_string(middle[i][j]) << ";";
         }
         fout << "\n";
     }
@@ -94,14 +84,22 @@ void doLab() {
     auto texts10_4 = getText(10000, 4);
     auto texts100_2 = getText(100000, 2);
     auto texts100_4 = getText(100000, 4);
-    fout << "=====texts10_2====\n";
-    createResult(texts10_2);
-    fout << "=====texts10_4====\n";
-    createResult(texts10_4);
-    fout << "=====texts100_2====\n";
-    createResult(texts100_2);
-    fout << "=====texts100_4====\n";
-    createResult(texts100_4);
+
+    for (int i = 0; i < 5; ++i) {
+        // fout << "=====texts10_2_" + std::to_string(i) + "=====\n";
+        fout << "\n";
+        createResult(texts10_2, i);
+        fout << "\n";
+        // fout << "=====texts10_4_" + std::to_string(i) + "=====\n";
+        createResult(texts10_4, i);
+        fout << "\n";
+        // fout << "=====texts100_2_" + std::to_string(i) + "=====\n";
+        createResult(texts100_2, i);
+        fout << "\n";
+        // fout << "=====texts100_4_" + std::to_string(i) + "=====\n";
+        createResult(texts100_4, i);
+        fout << "\n";
+    }
 }
 
 int main() {
