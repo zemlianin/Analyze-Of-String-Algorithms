@@ -86,17 +86,17 @@ void doLab() {
     auto texts100_4 = getText(100000, 4);
 
     for (int i = 0; i < 5; ++i) {
-        // fout << "=====texts10_2_" + std::to_string(i) + "=====\n";
-        fout << "\n";
+        fout << "=====texts10_2_" + std::to_string(i) + "=====\n";
+        //fout << "\n";
         createResult(texts10_2, i);
-        fout << "\n";
-        // fout << "=====texts10_4_" + std::to_string(i) + "=====\n";
+        //fout << "\n";
+        fout << "=====texts10_4_" + std::to_string(i) + "=====\n";
         createResult(texts10_4, i);
-        fout << "\n";
-        // fout << "=====texts100_2_" + std::to_string(i) + "=====\n";
+        //fout << "\n";
+        fout << "=====texts100_2_" + std::to_string(i) + "=====\n";
         createResult(texts100_2, i);
-        fout << "\n";
-        // fout << "=====texts100_4_" + std::to_string(i) + "=====\n";
+        //fout << "\n";
+        fout << "=====texts100_4_" + std::to_string(i) + "=====\n";
         createResult(texts100_4, i);
         fout << "\n";
     }
