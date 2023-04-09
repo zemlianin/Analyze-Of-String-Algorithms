@@ -88,31 +88,36 @@ void doLab() {
 
     for (int i = 0; i < 5; ++i) {
         fout << "=====texts10_2_" + std::to_string(i) + "=====\n";
-        //fout << "\n";
+        fout << "\n";
         createResult(texts10_2, i);
-        //fout << "\n";
+        std::cout << rar << "\n" << qrar << "\n" << rar / (double) qrar << "\n";
+        rar = 0;
+        qrar = 0;
+        fout << "\n";
         fout << "=====texts10_4_" + std::to_string(i) + "=====\n";
         createResult(texts10_4, i);
-        //fout << "\n";
+        std::cout << rar << "\n" << qrar << "\n" << rar / (double) qrar << "\n";
+        rar = 0;
+        qrar = 0;
+        fout << "\n";
         fout << "=====texts100_2_" + std::to_string(i) + "=====\n";
         createResult(texts100_2, i);
-        //fout << "\n";
+        std::cout << rar << "\n" << qrar << "\n" << rar / (double) qrar << "\n";
+        rar = 0;
+        qrar = 0;
+        fout << "\n";
         fout << "=====texts100_4_" + std::to_string(i) + "=====\n";
         createResult(texts100_4, i);
+        std::cout << rar << "\n" << qrar << "\n" << rar / (double) qrar << "\n";
+        rar = 0;
+        qrar = 0;
         fout << "\n";
     }
 }
 
 int main() {
-/*    std::string s = "arrared";
-    std::string p = "ar";
-    std::vector<int> res;
-    rabinKarpSearch(s, p, res);
-    for (int i = 0; i < res.size(); ++i) {
-        std::cout << res[i] << " ";
-    }*/
-     fout.open("../output.txt");
-     doLab();
-     fout.close();
+    fout.open("../output.txt");
+    doLab();
+    fout.close();
     return 0;
 }

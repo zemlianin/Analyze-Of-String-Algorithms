@@ -2,11 +2,17 @@
 #include <vector>
 #include <string>
 
+int64_t rar = 0;
+int64_t qrar = 0;
 
-std::vector<int> br;
-std::vector<int> brs;
+void sumbr(std::vector<int> &br) {
+    for (int i = 0; i < br.size(); ++i) {
+        rar += br[i];
+    }
+    qrar += br.size();
+}
 
-void computebr(std::string &pat, int m) {
+void computebr(std::vector<int> &br, std::string &pat, int m) {
     int len = 0;
     br[0] = 0;
     int i = 1;
@@ -24,9 +30,10 @@ void computebr(std::string &pat, int m) {
             }
         }
     }
+    sumbr(br);
 }
 
-void computebrs(int m) {
+void computebrs(std::vector<int> &br, std::vector<int> &brs, int m) {
     brs = std::vector<int>(m);
     for (size_t i = 0; i < m; ++i) {
         if (i + 1 == m || br[i] >= br[i + 1]) {
@@ -53,12 +60,14 @@ void simpleSearch(std::string &text, std::string &pattern, std::vector<int> &ans
 }
 
 void kmpWithBrs(std::string &txt, std::string &pat, std::vector<int> &result) {
+    std::vector<int> brs;
+    std::vector<int> br;
     int m = static_cast<int>(pat.length());
     int n = static_cast<int>(txt.length());
     br = std::vector<int>(m);
 
-    computebr(pat, m);
-    computebrs(m);
+    computebr(br, pat, m);
+    computebrs(br, brs,m);
     int i = 0;
     int j = 0;
     int count = 0;
@@ -84,11 +93,12 @@ void kmpWithBrs(std::string &txt, std::string &pat, std::vector<int> &result) {
 }
 
 void kmp(std::string &txt, std::string &pat, std::vector<int> &result) {
+    std::vector<int> br;
     int m = static_cast<int>(pat.length());
     int n = static_cast<int>(txt.length());
     br = std::vector<int>(m);
 
-    computebr(pat, m);
+    computebr(br, pat, m);
     int i = 0;
     int j = 0;
     int count = 0;
@@ -115,7 +125,7 @@ void kmp(std::string &txt, std::string &pat, std::vector<int> &result) {
 
 #define ded 256
 
-static void rabinKarpSearch(std::string &txt, std::string &pat, std::vector<int> &res) {
+void rabinKarpSearch(std::string &txt, std::string &pat, std::vector<int> &res) {
     auto q = INT32_MAX;
     int m = static_cast<int>(pat.size());
     int n = static_cast<int>(txt.length());
@@ -137,7 +147,7 @@ static void rabinKarpSearch(std::string &txt, std::string &pat, std::vector<int>
 
         if (pattern_hash == text_hash) {
             for (j = 0; j < m; j++) {
-                if (txt[i + j] != pat[j]) {
+                if (txt[i + j] != pat[j] && pat[j] != '?') {
                     break;
                 }
             }
