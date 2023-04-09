@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 #include <string>
+#include "math.h"
 
 int64_t rar = 0;
 int64_t qrar = 0;
@@ -67,7 +69,7 @@ void kmpWithBrs(std::string &txt, std::string &pat, std::vector<int> &result) {
     br = std::vector<int>(m);
 
     computebr(br, pat, m);
-    computebrs(br, brs,m);
+    computebrs(br, brs, m);
     int i = 0;
     int j = 0;
     int count = 0;
@@ -125,6 +127,19 @@ void kmp(std::string &txt, std::string &pat, std::vector<int> &result) {
 
 #define ded 256
 
+bool checkQues(std::unordered_map<int, int> &ques_indexes, int text_hash, int pattern_hash) {
+    if(ques_indexes.empty()){
+        return false;
+    }
+    for (auto it: ques_indexes) {
+        if (text_hash == pattern_hash + it.second * '1' ||
+            text_hash == pattern_hash + it.second * '0') {
+            return true;
+        }
+    }
+    return false;
+}
+
 void rabinKarpSearch(std::string &txt, std::string &pat, std::vector<int> &res) {
     auto q = INT32_MAX;
     int m = static_cast<int>(pat.size());
@@ -133,19 +148,30 @@ void rabinKarpSearch(std::string &txt, std::string &pat, std::vector<int> &res) 
     int pattern_hash = 0;
     int text_hash = 0;
     int h = 1;
-
-    for (i = 0; i < m - 1; i++) {
-        h = (h * ded) % q;
-    }
+    std::unordered_map<int, int> ques_indexes;
 
     for (i = 0; i < m; i++) {
-        pattern_hash = (ded * pattern_hash + pat[i]) % q;
+        if (pat[i] == '?') {
+            ques_indexes[i] = 0;
+            pattern_hash = (ded * pattern_hash) % q;
+        } else {
+            pattern_hash = (ded * pattern_hash + pat[i]) % q;
+        }
+
         text_hash = (ded * text_hash + txt[i]) % q;
+    }
+    int count = ques_indexes.size();
+    for (i = 0; i < m - 1; i++) {
+        if (count != 0 && ques_indexes.contains(i)) {
+           ques_indexes[i] = h;
+           count--;
+      }
+        h = (h * ded) % q;
     }
 
     for (i = 0; i <= n - m; i++) {
 
-        if (pattern_hash == text_hash) {
+        if (pattern_hash == text_hash || checkQues(ques_indexes, text_hash, pattern_hash)) {
             for (j = 0; j < m; j++) {
                 if (txt[i + j] != pat[j] && pat[j] != '?') {
                     break;

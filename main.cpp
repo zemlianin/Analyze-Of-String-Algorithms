@@ -119,5 +119,12 @@ int main() {
     fout.open("../output.txt");
     doLab();
     fout.close();
+    /*std::string s = "1101010111";
+    std::string p = "1?1";
+    std::vector<int> res;
+    rabinKarpSearch(s,p,res);
+    for (int i = 0; i < res.size(); ++i) {
+        std::cout<<res[i]<<" ";
+    }*/
     return 0;
 }
