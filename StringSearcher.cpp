@@ -112,3 +112,47 @@ void kmp(std::string &txt, std::string &pat, std::vector<int> &result) {
         }
     }
 }
+
+#define ded 256
+
+static void rabinKarpSearch(std::string &txt, std::string &pat, std::vector<int> &res) {
+    auto q = INT32_MAX;
+    int m = static_cast<int>(pat.size());
+    int n = static_cast<int>(txt.length());
+    int i, j;
+    int pattern_hash = 0;
+    int text_hash = 0;
+    int h = 1;
+
+    for (i = 0; i < m - 1; i++) {
+        h = (h * ded) % q;
+    }
+
+    for (i = 0; i < m; i++) {
+        pattern_hash = (ded * pattern_hash + pat[i]) % q;
+        text_hash = (ded * text_hash + txt[i]) % q;
+    }
+
+    for (i = 0; i <= n - m; i++) {
+
+        if (pattern_hash == text_hash) {
+            for (j = 0; j < m; j++) {
+                if (txt[i + j] != pat[j]) {
+                    break;
+                }
+            }
+
+            if (j == m) {
+                res.push_back(i);
+            }
+        }
+
+        if (i < n - m) {
+            text_hash = (ded * (text_hash - txt[i] * h) + txt[i + m]) % q;
+
+            if (text_hash < 0) {
+                text_hash = (text_hash + q);
+            }
+        }
+    }
+}

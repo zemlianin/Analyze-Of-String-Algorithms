@@ -8,7 +8,7 @@
 int numOfTry = 20;
 int startIndex = 34;
 std::ofstream fout;
-
+int numOfAlg = 4;
 
 void check(std::string &text, std::string &pattern, std::vector<int> &res) {
     int index = 0;
@@ -44,7 +44,7 @@ std::vector<int> search(std::string &text, std::string &pattern, std::vector<int
 }
 
 void createResult(std::vector<std::string> texts, int num_quest) {
-    std::vector<std::vector<std::vector<int64_t>>> resultTime(3, std::vector<std::vector<int64_t>>(3000 / 100));
+    std::vector<std::vector<std::vector<int64_t>>> resultTime(numOfAlg, std::vector<std::vector<int64_t>>(3000 / 100));
     std::string pattern;
     std::vector<int> result;
     int n = 0;
@@ -57,12 +57,13 @@ void createResult(std::vector<std::string> texts, int num_quest) {
             search(texts[i], pattern, resultTime[0][n], simpleSearch);
             search(texts[i], pattern, resultTime[1][n], kmp);
             search(texts[i], pattern, resultTime[2][n], kmpWithBrs);
+            search(texts[i], pattern, resultTime[3][n], rabinKarpSearch);
         }
         n++;
     }
-    std::vector<std::vector<int64_t>> middle(3);
+    std::vector<std::vector<int64_t>> middle(4);
     int64_t sum;
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < numOfAlg; ++i) {
         for (int j = 0; j < resultTime[i].size(); ++j) {
             sum = 0;
             for (int k = 0; k < resultTime[i][j].size(); ++k) {
@@ -71,7 +72,7 @@ void createResult(std::vector<std::string> texts, int num_quest) {
             middle[i].push_back(sum / resultTime[i][j].size());
         }
     }
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < numOfAlg; ++i) {
         for (int j = 0; j < middle[i].size(); ++j) {
             fout << std::to_string(middle[i][j]) << ";";
         }
@@ -103,8 +104,15 @@ void doLab() {
 }
 
 int main() {
-    fout.open("../output.txt");
-    doLab();
-    fout.close();
+/*    std::string s = "arrared";
+    std::string p = "ar";
+    std::vector<int> res;
+    rabinKarpSearch(s, p, res);
+    for (int i = 0; i < res.size(); ++i) {
+        std::cout << res[i] << " ";
+    }*/
+     fout.open("../output.txt");
+     doLab();
+     fout.close();
     return 0;
 }
