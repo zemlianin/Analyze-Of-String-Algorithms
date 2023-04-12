@@ -7,6 +7,7 @@
 int64_t rar = 0;
 int64_t qrar = 0;
 
+// Расчет суммы граней, требуется для расчета среднего ускорения КМП
 void sumbr(std::vector<int> &br) {
     for (int i = 0; i < br.size(); ++i) {
         rar += br[i];
@@ -14,6 +15,7 @@ void sumbr(std::vector<int> &br) {
     qrar += br.size();
 }
 
+// Расчет массива граней
 void computebr(std::vector<int> &br, std::string &pat, int m) {
     int len = 0;
     br[0] = 0;
@@ -35,6 +37,7 @@ void computebr(std::vector<int> &br, std::string &pat, int m) {
     sumbr(br);
 }
 
+// Расчет массива уточненных граней
 void computebrs(std::vector<int> &br, std::vector<int> &brs, int m) {
     brs = std::vector<int>(m);
     for (size_t i = 0; i < m; ++i) {
@@ -44,6 +47,7 @@ void computebrs(std::vector<int> &br, std::vector<int> &brs, int m) {
     }
 }
 
+// Наивный поиск
 void simpleSearch(std::string &text, std::string &pattern, std::vector<int> &ans) {
     int n = static_cast<int>(text.length());
     int m = static_cast<int>(pattern.length());
@@ -61,6 +65,7 @@ void simpleSearch(std::string &text, std::string &pattern, std::vector<int> &ans
     }
 }
 
+// Поиск с уточненными гранями
 void kmpWithBrs(std::string &txt, std::string &pat, std::vector<int> &result) {
     std::vector<int> brs;
     std::vector<int> br;
@@ -94,6 +99,7 @@ void kmpWithBrs(std::string &txt, std::string &pat, std::vector<int> &result) {
     }
 }
 
+// Поик алгоритмом КМП
 void kmp(std::string &txt, std::string &pat, std::vector<int> &result) {
     std::vector<int> br;
     int m = static_cast<int>(pat.length());
@@ -125,10 +131,13 @@ void kmp(std::string &txt, std::string &pat, std::vector<int> &result) {
     }
 }
 
+// Константа хэширования
 #define ded 256
 
+// Проверка хэша на соответствие
+// знаку вопроса в соответствующем месте.
 bool checkQues(std::unordered_map<int, int> &ques_indexes, int text_hash, int pattern_hash) {
-    if(ques_indexes.empty()){
+    if (ques_indexes.empty()) {
         return false;
     }
     for (auto it: ques_indexes) {
@@ -140,6 +149,7 @@ bool checkQues(std::unordered_map<int, int> &ques_indexes, int text_hash, int pa
     return false;
 }
 
+// Поиск Рабина-Карпа
 void rabinKarpSearch(std::string &txt, std::string &pat, std::vector<int> &res) {
     auto q = INT32_MAX;
     int m = static_cast<int>(pat.size());
@@ -163,9 +173,9 @@ void rabinKarpSearch(std::string &txt, std::string &pat, std::vector<int> &res) 
     int count = ques_indexes.size();
     for (i = 0; i < m - 1; i++) {
         if (count != 0 && ques_indexes.contains(i)) {
-           ques_indexes[i] = h;
-           count--;
-      }
+            ques_indexes[i] = h;
+            count--;
+        }
         h = (h * ded) % q;
     }
 

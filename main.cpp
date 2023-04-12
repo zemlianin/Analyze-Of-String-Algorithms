@@ -5,11 +5,17 @@
 #include "chrono"
 #include <fstream>
 
+// Число попыток
 int numOfTry = 20;
+// Стартовый индекс
 int startIndex = 34;
+// Поток вывода в файл
 std::ofstream fout;
+// Общее число алгоритмов поиска
 int numOfAlg = 4;
 
+// Простой чекер, в случае ошибки выводит сообщение об ошибке
+// Способен дать ложно положительный ответ
 void check(std::string &text, std::string &pattern, std::vector<int> &res) {
     int index = 0;
     while (index != -1) {
@@ -20,6 +26,7 @@ void check(std::string &text, std::string &pattern, std::vector<int> &res) {
     }
 }
 
+// Метод генерации текста, генерирует текст в зависиомоти от параметров
 std::vector<std::string> getText(int len, int a) {
     srand(55);
     std::vector<std::string> ans = std::vector<std::string>(numOfTry);
@@ -31,6 +38,8 @@ std::vector<std::string> getText(int len, int a) {
     return ans;
 }
 
+// Функция поиска подстроки в строке, принимает указатель на функцию,
+// замеряет время, запускает функцию, сверяет результатт ее работы и возвращает ответ
 std::vector<int> search(std::string &text, std::string &pattern, std::vector<int64_t> &resultTime,
                         void (*func)(std::string &, std::string &, std::vector<int> &)) {
     std::vector<int> result;
@@ -43,6 +52,8 @@ std::vector<int> search(std::string &text, std::string &pattern, std::vector<int
     return result;
 }
 
+// Функция проведения опыта, принимает набор текстов и зпускает их,
+// как различные попытки, на разных функциях с разными паттернами
 void createResult(std::vector<std::string> texts, int num_quest) {
     std::vector<std::vector<std::vector<int64_t>>> resultTime(numOfAlg, std::vector<std::vector<int64_t>>(3000 / 100));
     std::string pattern;
@@ -80,6 +91,8 @@ void createResult(std::vector<std::string> texts, int num_quest) {
     }
 }
 
+// Основной метод лабороторной работы, производит генерацию опытов и
+// запуск их исполнения в зависимости от параметров
 void doLab() {
     auto texts10_2 = getText(10000, 2);
     auto texts10_4 = getText(10000, 4);
@@ -115,16 +128,11 @@ void doLab() {
     }
 }
 
+// Метод открывает-закрывает поток вывода в файл и
+// запускает лабороторную работу.
 int main() {
     fout.open("../output.txt");
     doLab();
     fout.close();
-    /*std::string s = "1101010111";
-    std::string p = "1?1";
-    std::vector<int> res;
-    rabinKarpSearch(s,p,res);
-    for (int i = 0; i < res.size(); ++i) {
-        std::cout<<res[i]<<" ";
-    }*/
     return 0;
 }
